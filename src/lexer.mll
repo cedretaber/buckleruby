@@ -12,7 +12,7 @@ let space = [' ' '\t']
 let new_line = '\r'? '\n'
 
 rule token = parse
-      space                     { token lexbuf }  (* skip blanks *)
+      space { token lexbuf }  (* skip blanks *)
 
     | nums '.' num* as lxm { FLOAT (float_of_string lxm) }
     | nums as lxm          { INT (int_of_string lxm) }
@@ -20,12 +20,12 @@ rule token = parse
 
     | "=>" { FATARROW }
 
-    | "**"           { EXP }
-    | '+'            { PLUS }
-    | '-'            { MINUS }
-    | '*'            { TIMES }
-    | '/'            { DIV }
-    | '%'            { MOD }
+    | "**" { EXP }
+    | '+'  { PLUS }
+    | '-'  { MINUS }
+    | '*'  { TIMES }
+    | '/'  { DIV }
+    | '%'  { MOD }
 
     | "==" { EQ }
     | "!=" { NEQ }
@@ -38,14 +38,14 @@ rule token = parse
 
     | '=' { EQUAL }
 
-    | '('            { LPAREN }
-    | ')'            { RPAREN }
+    | '(' { LPAREN }
+    | ')' { RPAREN }
 
-    | '['            { LBRACKET }
-    | ']'            { RBRACKET }
+    | '[' { LBRACKET }
+    | ']' { RBRACKET }
 
-    | '{'            { LBRACE }
-    | '}'            { RBRACE }
+    | '{' { LBRACE }
+    | '}' { RBRACE }
 
     | "nil"   { NIL }
     | "false" { FALSE }
@@ -59,10 +59,11 @@ rule token = parse
     | "def"   { DEF }
     | "begin" { BEGIN }
 
-    | ','      { COMMA }
-    | (space* ';' space*)+      { SEMICOLON }
-    | (space* new_line space*)+ { EOL }
+    | ',' { COMMA }
 
-    | ('_' | char) ('_' | char | num)* ['!' '?']? as lxm { VAR lxm }
+    | ';'      { SEMICOLON }
+    | new_line { EOL }
 
-    | eof            { EOF }
+    | ('_' | char) ('_' | char | num)* as lxm { IDENTIFY lxm }
+
+    | eof { EOF }

@@ -14,7 +14,7 @@ exception Invalid_stmts of Rexp.t
 %token LPAREN RPAREN
 %token LBRACKET RBRACKET
 %token LBRACE RBRACE
-%token <string> VAR
+%token <string> IDENTIFY
 %token NIL FALSE TRUE
 %token IF THEN ELSE ELSIF END WHILE DEF BEGIN
 %token FATARROW
@@ -66,15 +66,15 @@ expr:
     | FALSE  { Lit False }
     | TRUE   { Lit True }
 
-    | PLUS expr %prec UNARY   { FuncCall ("+", [$2]) }
-    | MINUS expr %prec UNARY  { FuncCall ("-", [$2]) }
+    | PLUS expr %prec UNARY  { FuncCall ("+", [$2]) }
+    | MINUS expr %prec UNARY { FuncCall ("-", [$2]) }
 
-    | expr PLUS expr          { FuncCall ("+", [$1; $3]) }
-    | expr MINUS expr         { FuncCall ("-", [$1; $3]) }
-    | expr TIMES expr         { FuncCall ("*", [$1; $3]) }
-    | expr DIV expr           { FuncCall ("/", [$1; $3]) }
-    | expr MOD expr           { FuncCall ("%", [$1; $3]) }
-    | expr EXP expr           { FuncCall ("**", [$1; $3]) }
+    | expr PLUS expr  { FuncCall ("+", [$1; $3]) }
+    | expr MINUS expr { FuncCall ("-", [$1; $3]) }
+    | expr TIMES expr { FuncCall ("*", [$1; $3]) }
+    | expr DIV expr   { FuncCall ("/", [$1; $3]) }
+    | expr MOD expr   { FuncCall ("%", [$1; $3]) }
+    | expr EXP expr   { FuncCall ("**", [$1; $3]) }
 
     | expr EQ expr  { FuncCall ("==", [$1; $3]) }
     | expr NEQ expr { FuncCall ("!=", [$1; $3]) }
@@ -86,10 +86,10 @@ expr:
     | expr ANDAND expr { And ($1, $3) }
     | expr OROR expr   { Or ($1, $3) }
 
-    | VAR EQUAL expr { VarAssign ($1, $3) }
-    | VAR            { VarRef $1 }
+    | IDENTIFY EQUAL expr { VarAssign ($1, $3) }
+    | IDENTIFY            { VarRef $1 }
 
-    | IF expr then_expr elsif_end         { If ($2, $3, $4) }
+    | IF expr then_expr elsif_end { If ($2, $3, $4) }
 
     | WHILE expr compstmt END { While ($2, $3) }
 
@@ -100,17 +100,17 @@ expr:
 
     | LBRACE arrows RBRACE { HashNew $2 }
 
-    | DEF VAR LPAREN params RPAREN compstmt END { FuncDef ($2, $4, $6) }
+    | DEF IDENTIFY LPAREN params RPAREN compstmt END { FuncDef ($2, $4, $6) }
 
-    | VAR LPAREN args RPAREN  { FuncCall ($1, $3) }
+    | IDENTIFY LPAREN args RPAREN  { FuncCall ($1, $3) }
 
     | LPAREN expr RPAREN { $2 }
 ;
 
 params:
-                       { [] }
-    | VAR              { [$1] }
-    | VAR COMMA params { $1 :: $3 }
+                            { [] }
+    | IDENTIFY              { [$1] }
+    | IDENTIFY COMMA params { $1 :: $3 }
 ;
 
 args:
