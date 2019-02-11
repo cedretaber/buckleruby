@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:11
+      - image: cedretaber/bucklescript-ci
     working_directory: ~/app
     steps:
       - checkout
