@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:11
+    working_directory: ~/app
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-cache-{{ checksum "package.json" }}
+            - yarn-cache-
+      - run: yarn install
+      - save_cache:
+          key: yarn-cache-{{ checksum "package.json" }}
+          paths:
+            - /home/circleci/.cache
+            - node_modules
+      - run: yarn test

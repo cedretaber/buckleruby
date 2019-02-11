@@ -1,0 +1,47 @@
+{
+  "name": "buckleruby",
+  "version": "0.1.0",
+  "generators" : [
+    {
+      "name" : "ocamlyacc",
+      "command": "ocamlyacc $in"
+    },
+    {
+      "name": "ocamllex",
+      "command": "ocamllex $in"
+    }
+  ],
+  "sources": [
+    {
+      "dir" : "src",
+      "subdirs" : true,
+      "generators" : [
+        {
+          "name" : "ocamlyacc",
+          "edge" : ["parser.ml", "parser.mli", ":", "parser.mly"]
+        },
+        {
+          "name" : "ocamllex",
+          "edge" : ["lexer.ml", ":", "lexer.mll"]
+        }
+      ]
+    },
+    {
+      "dir": "__tests__",
+      "subdirs" : true,
+      "type": "dev"
+    }
+  ],
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  },
+  "suffix": ".bs.js",
+  "bs-dependencies": [
+    "@glennsl/bs-jest"
+  ],
+  "warnings": {
+    "error" : "+101"
+  },
+  "refmt": 3
+}
