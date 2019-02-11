@@ -234,6 +234,15 @@ y = 99
 x + y
 |} in
     expect (run str) = Int (42 + 99));
+
+  test "multi assign" (fun () ->
+    let str =
+{|
+x = y = 1
+x + y
+|} in
+    expect (run str) = Int 2
+  );
 );
 
 describe "Array" (fun () ->
