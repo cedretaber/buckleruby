@@ -1,6 +1,8 @@
 
 # BUCKLERUBY
 
+[![CircleCI](https://circleci.com/gh/cedretaber/buckleruby.svg?style=svg)](https://circleci.com/gh/cedretaber/buckleruby)
+
 A MinRuby interpreter written by BuckleScript.
 
 MinRuby: A small, minimal Ruby interpreter
