@@ -5,7 +5,7 @@
 
 A MinRuby interpreter written by BuckleScript.
 
-MinRuby: A small, minimal Ruby interpreter
+[MinRuby](https://github.com/mame/minruby): A small, minimal Ruby interpreter
 
 ## Setup
 
