@@ -102,7 +102,7 @@ expr:
 
     | DEF IDENTIFIER LPAREN params RPAREN compstmt END { FuncDef ($2, $4, $6) }
 
-    | IDENTIFIER LPAREN args RPAREN  { FuncCall ($1, $3) }
+    | IDENTIFIER LPAREN args RPAREN { FuncCall ($1, $3) }
 
     | LPAREN expr RPAREN { $2 }
 ;
