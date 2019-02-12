@@ -14,7 +14,7 @@ exception Invalid_stmts of Rexp.t
 %token LPAREN RPAREN
 %token LBRACKET RBRACKET
 %token LBRACE RBRACE
-%token <string> IDENTIFY
+%token <string> IDENTIFIER
 %token NIL FALSE TRUE
 %token IF THEN ELSE ELSIF END WHILE DEF BEGIN
 %token FATARROW
@@ -52,8 +52,8 @@ stmts:
 ;
 
 blank_lines:
-      EOL       {}
-    | SEMICOLON {}
+      EOL                   {}
+    | SEMICOLON             {}
     | EOL blank_lines       {}
     | SEMICOLON blank_lines {}
 ;
@@ -86,8 +86,8 @@ expr:
     | expr ANDAND expr { And ($1, $3) }
     | expr OROR expr   { Or ($1, $3) }
 
-    | IDENTIFY EQUAL expr { VarAssign ($1, $3) }
-    | IDENTIFY            { VarRef $1 }
+    | IDENTIFIER EQUAL expr { VarAssign ($1, $3) }
+    | IDENTIFIER            { VarRef $1 }
 
     | IF expr then_expr elsif_end { If ($2, $3, $4) }
 
@@ -100,17 +100,17 @@ expr:
 
     | LBRACE arrows RBRACE { HashNew $2 }
 
-    | DEF IDENTIFY LPAREN params RPAREN compstmt END { FuncDef ($2, $4, $6) }
+    | DEF IDENTIFIER LPAREN params RPAREN compstmt END { FuncDef ($2, $4, $6) }
 
-    | IDENTIFY LPAREN args RPAREN  { FuncCall ($1, $3) }
+    | IDENTIFIER LPAREN args RPAREN  { FuncCall ($1, $3) }
 
     | LPAREN expr RPAREN { $2 }
 ;
 
 params:
-                            { [] }
-    | IDENTIFY              { [$1] }
-    | IDENTIFY COMMA params { $1 :: $3 }
+                              { [] }
+    | IDENTIFIER              { [$1] }
+    | IDENTIFIER COMMA params { $1 :: $3 }
 ;
 
 args:

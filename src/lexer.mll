@@ -64,6 +64,6 @@ rule token = parse
     | ';'      { SEMICOLON }
     | new_line { EOL }
 
-    | ('_' | char) ('_' | char | num)* as lxm { IDENTIFY lxm }
+    | ('_' | char) ('_' | char | num)* as lxm { IDENTIFIER lxm }
 
     | eof { EOF }
