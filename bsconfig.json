@@ -1,6 +1,9 @@
 {
   "name": "buckleruby",
   "version": "0.1.0",
+  "reason": {
+    "react-jsx": 2
+  },
   "generators" : [
     {
       "name" : "ocamlyacc",
@@ -38,6 +41,9 @@
   },
   "suffix": ".bs.js",
   "bs-dependencies": [
+    "reason-react"
+  ],
+  "bs-dev-dependencies": [
     "@glennsl/bs-jest"
   ],
   "warnings": {

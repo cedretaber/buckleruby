@@ -27,6 +27,7 @@ lib/bs
 
 __tests__/*.bs.js
 node_modules/
+dist/index.js
 src/*.bs.js
 src/parser.ml
 src/parser.mli
