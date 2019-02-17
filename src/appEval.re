@@ -7,6 +7,7 @@ let s = RR.string;
 
 type state = {
   src: string,
+  inputs: string,
   outputs: Result.t(list(string), list(string))
 };
 
@@ -35,26 +36,32 @@ module Control = {
   }
 };
 
+module InputInput = {
+  let component = RR.statelessComponent("AppEval.InputInput");
+
+  let make = (~value, ~onChange, _children) => {
+    ...component,
+    render: _self => {
+      <div className="input-input">
+        <textarea value onChange />
+      </div>
+    }
+  };
+}
+
 module Console = {
   let component = RR.statelessComponent("AppEval.Console");
 
   let make = (~value, _children) => {
     ...component,
     render: _self => {
-      let value =
-        value
-        |> List.map (v => v |> Js.String.split("\n"))
-        |> Array.concat
-        |> Array.map(s);
-      let len = Array.length(value);
-      let newlines = Array.make(len, <br />);
-      let value = Belt.(
-        value
-        ->Array.zipBy(newlines, (l, b) => [|l, b|])
-        ->Array.concatMany
-      );
+      let value = String.concat("\n", value);
       <div className="src-console">
-        ...value
+        <pre>
+          <code>
+            {s(value)}
+          </code>
+        </pre>
       </div>
     }
   }
@@ -62,7 +69,7 @@ module Console = {
 
 let component = RR.statelessComponent("AppEval");
 
-let make = (~state as {src, outputs}, ~dispatcher, _children) => {
+let make = (~state as {src, inputs, outputs}, ~dispatcher, _children) => {
   ...component,
   render: _self => {
     let outputs = switch (outputs) {
@@ -72,6 +79,7 @@ let make = (~state as {src, outputs}, ~dispatcher, _children) => {
     <div className="eval">
       <SourceInput value=src onChange={dispatcher#onEvalSrcChange}/>
       <Control doRun={dispatcher#doEvalRun} doClear={dispatcher#doEvalClear}/>
+      <InputInput value=inputs onChange={dispatcher#onEvalInputChange} />
       <Console value=outputs/>
     </div>
   }

@@ -9,6 +9,7 @@ module Interp = {
 
   type result = {
     result: string,
+    inputs: string,
     outputs: list(string)
   };
 
@@ -17,7 +18,8 @@ module Interp = {
     message: string
   };
 
-  let run = (src, inputStr) => {
+  let run = (src, inputStr') => {
+    let inputStr = inputStr' |> Js.String.split("\n") |> Array.to_list;
     let input = {
       as _;
       val mutable inputStr = inputStr;
@@ -38,7 +40,7 @@ module Interp = {
     let tree = Parser.main(Lexer.token, Lexing.from_string(src));
     switch (Interp.eval_with_default(input, output, tree)) {
     | result =>
-      Result.Ok({ result: Value.show(result), outputs: output#flush() });
+      Result.Ok({ result: Value.show(result), inputs: inputStr', outputs: output#flush() });
     | exception NoInput =>
       Result.Error({ tpe: "InvalidInput", message: "No enough inputs." });
     | exception Interp.Invalid_VarRef(var) =>
@@ -75,12 +77,14 @@ module Interp = {
 module Eval = {
   type action =
     | UpdateSrc(string)
+    | UpdateInput(string)
     | Run
     | RunFinished(Result.t(list(string), list(string)))
     | Clear;
 
   type state = {
     src: string,
+    inputs: string,
     outputs: Result.t(list(string), list(string))
   };
 };
@@ -94,7 +98,7 @@ type action =
 let component = RR.reducerComponent("App");
 
 let initialState = () => {
-  EvalState(Eval.{ src: "", outputs: Result.Ok([]) });
+  EvalState(Eval.{ src: "", inputs: "", outputs: Result.Ok([]) });
 };
 
 let reducer = (action, state) => {
@@ -103,9 +107,11 @@ let reducer = (action, state) => {
     switch (action, state) {
     | (UpdateSrc(src), _) =>
       RR.Update(EvalState({ ...state, src }));
-    | (Run, { src }) =>
+    | (UpdateInput(inputs), _) =>
+      RR.Update(EvalState({ ...state, inputs }));
+    | (Run, { src, inputs }) =>
       RR.SideEffects(self => {
-        let outputs = switch (Interp.run(src, [])) {
+        let outputs = switch (Interp.run(src, inputs)) {
         | Result.Ok({ Interp.result, outputs }) =>
           Result.Ok(List.concat([List.rev(outputs), [result]]));
         | Result.Error({ Interp.tpe, message }) =>
@@ -132,6 +138,10 @@ class dispatcher(self) = {
     event->RE.Mouse.preventDefault;
     self.RR.send(EvalAction(Eval.Run));
   };
+  pub onEvalInputChange = event => {
+    let value = event->RE.Form.target##value;
+    self.RR.send(EvalAction(Eval.UpdateInput(value)));
+  };
   pub doEvalClear = event => {
     event->RE.Mouse.preventDefault;
     self.RR.send(EvalAction(Eval.Clear));
@@ -142,8 +152,8 @@ let render = self => {
   let dispatcher = (new dispatcher)(self);
   switch (self.RR.state) {
   | EvalState(state) =>
-    let { Eval.src, outputs } = state;
-    <AppEval state=(AppEval.{ src, outputs }) dispatcher />
+    let { Eval.src, inputs, outputs } = state;
+    <AppEval state=(AppEval.{ src, inputs, outputs }) dispatcher />
   };
 };
 
