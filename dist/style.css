@@ -4,14 +4,41 @@ body {
 }
 
 .header {
+    height: 4rem;
+    display: flex;
+    align-items: center;
     background-color: #330000;
     color: #cccccc;
-    padding: 0.5rem;
     margin-bottom: 2rem;
 }
 
 .header:link {
     color: #cccccc;
+}
+
+.header .logo {
+    font-size: 200%;
+    padding: 0 1rem;
+}
+
+.header .links {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin-left: 3rem;
+}
+
+.header .links span {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    cursor: pointer;
+    transition: 1s;
+}
+
+.header .links span:hover {
+    background-color: #cc6666;
 }
 
 .container {
@@ -23,6 +50,12 @@ body {
 .content {
     width: 100%;
     max-width: 600px;
+}
+
+.example .codeblock {
+    padding: 0.5rem;
+    background-color: #333333;
+    color: #cccccc;
 }
 
 .eval {

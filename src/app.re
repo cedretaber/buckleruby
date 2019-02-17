@@ -96,19 +96,31 @@ module Eval = {
 };
 
 type state =
+  | ExampleState
   | EvalState(Eval.state);
 
 type action =
+  | GoTo(state)
   | EvalAction(Eval.action);
 
 let component = RR.reducerComponent("App");
 
-let initialState = () => {
-  EvalState(Eval.{ src: "", inputs: "", outputs: Result.Ok([]) });
-};
+let initialState = () => ExampleState;
+
+let didMount = self => {
+  let watcherID = RR.Router.watchUrl(url =>
+    switch (url.hash) {
+    | "eval" => self.RR.send(GoTo(EvalState(Eval.{ src: "", inputs: "", outputs: Result.Ok([]) })));
+    | _ => self.RR.send(GoTo(ExampleState));
+    }
+  );
+  self.RR.onUnmount(() => RR.Router.unwatchUrl(watcherID));
+}
 
 let reducer = (action, state) => {
   switch (action, state) {
+  | (GoTo(state), _) =>
+    RR.Update(state);
   | (EvalAction(action), EvalState(state)) =>
     switch (action, state) {
     | (UpdateSrc(src), _) =>
@@ -130,6 +142,9 @@ let reducer = (action, state) => {
     | (Clear, _) =>
       RR.Update(EvalState({ ...state, src: "" }));
     };
+  | _ =>
+    Js.log("Invalid action and status.");
+    RR.NoUpdate;
   };
 };
 
@@ -158,14 +173,25 @@ let render = self => {
   let dispatcher = (new dispatcher)(self);
   let content =
     switch (self.RR.state) {
+    | ExampleState =>
+      <AppExample />
     | EvalState(state) =>
       let { Eval.src, inputs, outputs } = state;
       <AppEval state=(AppEval.{ src, inputs, outputs }) dispatcher />
     };
+  let changeUrl = (hash, event) => {
+    event->RE.Mouse.preventDefault;
+    let {RR.Router.path} = RR.Router.dangerouslyGetInitialUrl();
+    RR.Router.push(String.concat("/", path) ++ "#" ++ hash);
+  };
   <>
     <header className="header">
       <div className="logo">
         {s("BUCKLERUBY")}
+      </div>
+      <div className="links">
+        <span className="example" onClick={changeUrl("example")}>{s("Example")}</span>
+        <span className="eval" onClick={changeUrl("eval")}>{s("Eval")}</span>
       </div>
     </header>
     <div className="container">
@@ -179,6 +205,7 @@ let render = self => {
 let make = _children => {
   ...component,
   initialState,
+  didMount,
   reducer,
   render
 };
