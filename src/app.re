@@ -2,6 +2,8 @@
 module RR = ReasonReact;
 module RE = ReactEvent;
 
+let s = RR.string;
+
 module Result = Belt.Result;
 
 module Interp = {
@@ -37,10 +39,14 @@ module Interp = {
       pub p = str => outputStr = [str, ...outputStr];
       pub flush = () => outputStr;
     };
-    let tree = Parser.main(Lexer.token, Lexing.from_string(src));
-    switch (Interp.eval_with_default(input, output, tree)) {
+    switch (
+      Parser.main(Lexer.token, Lexing.from_string(src))
+      |> Interp.eval_with_default(input, output)
+    ) {
     | result =>
       Result.Ok({ result: Value.show(result), inputs: inputStr', outputs: output#flush() });
+    | exception Parsing.Parse_error =>
+      Result.Error({ tpe: "ParseError", message: "Parse error." })
     | exception NoInput =>
       Result.Error({ tpe: "InvalidInput", message: "No enough inputs." });
     | exception Interp.Invalid_VarRef(var) =>
@@ -150,11 +156,24 @@ class dispatcher(self) = {
 
 let render = self => {
   let dispatcher = (new dispatcher)(self);
-  switch (self.RR.state) {
-  | EvalState(state) =>
-    let { Eval.src, inputs, outputs } = state;
-    <AppEval state=(AppEval.{ src, inputs, outputs }) dispatcher />
-  };
+  let content =
+    switch (self.RR.state) {
+    | EvalState(state) =>
+      let { Eval.src, inputs, outputs } = state;
+      <AppEval state=(AppEval.{ src, inputs, outputs }) dispatcher />
+    };
+  <>
+    <header className="header">
+      <div className="logo">
+        {s("BUCKLERUBY")}
+      </div>
+    </header>
+    <div className="container">
+      <div className="content">
+        {content}
+      </div>
+    </div>
+  </>
 };
 
 let make = _children => {

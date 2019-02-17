@@ -1,0 +1,64 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: #330000;
+    color: #cccccc;
+    padding: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.header:link {
+    color: #cccccc;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.content {
+    width: 100%;
+    max-width: 600px;
+}
+
+.eval {
+
+}
+
+.src-input {
+
+}
+
+.src-control {
+    padding: 0.5rem;
+    display: flex;
+}
+
+.src-control button {
+    border: solid 1px #999999;
+    color: #333333;
+    padding: 0.2rem;
+    margin: 0.3rem;
+    margin-left: 0.5rem;
+}
+
+.input-input {
+}
+
+.src-console {
+    min-height: 1rem;
+    background-color: #333333;
+    padding: 0.3rem 1rem;
+}
+
+.src-console.default {
+    color: #cccccc;
+}
+
+.src-console.error {
+    color: #cc6666;
+}
