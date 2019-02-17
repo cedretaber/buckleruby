@@ -9,6 +9,7 @@ body {
     align-items: center;
     background-color: #330000;
     color: #cccccc;
+    box-shadow: 0 2px 0 1px rgba(48, 0, 0, 0.5);
     margin-bottom: 2rem;
 }
 

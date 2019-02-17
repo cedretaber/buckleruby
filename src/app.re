@@ -351,7 +351,7 @@ let render = self => {
   let changeUrl = (hash, event) => {
     event->RE.Mouse.preventDefault;
     let {RR.Router.path} = RR.Router.dangerouslyGetInitialUrl();
-    RR.Router.push(String.concat("/", path) ++ "#" ++ hash);
+    RR.Router.push("/" ++ String.concat("/", path) ++ "#" ++ hash);
   };
   <>
     <header className="header">
