@@ -34,7 +34,7 @@ body {
     align-items: center;
     padding: 0 1rem;
     cursor: pointer;
-    transition: 1s;
+    transition: 0.5s;
 }
 
 .header .links span:hover {
@@ -45,6 +45,7 @@ body {
     width: 100%;
     display: flex;
     justify-content: center;
+    margin-bottom: 2rem;
 }
 
 .content {
@@ -77,6 +78,11 @@ body {
     padding: 0.2rem;
     margin: 0.3rem;
     margin-left: 0.5rem;
+    transition: 0.5s;
+}
+
+.src-control button:hover {
+    background-color: #999999;
 }
 
 .input-input {
@@ -93,5 +99,54 @@ body {
 }
 
 .src-console.error {
+    color: #cc6666;
+}
+
+.repl-block {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.repl-console-input.indented {
+    margin-left: 1em;
+}
+
+.repl-reset {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.repl-reset button {
+    border: solid 1px #999999;
+    color: #333333;
+    padding: 0.2rem;
+    margin: 0.3rem;
+    margin-left: 0.5rem;
+    transition: 0.5s;
+}
+
+.repl-reset button:hover {
+    background-color: #999999;
+}
+
+.repl-block {
+    padding: 0.5rem;
+    background-color: #333333;
+    color: #cccccc;
+}
+
+.repl-block input {
+    height: 1.2rem;
+    font-size: 1.2rem;
+    font-family: 'Courier New', Courier, monospace;
+    width: 80%;
+    border: none;
+    background-color: #333333;
+    color: #cccccc;
+    outline: 0;
+}
+
+.repl-block .repl-console-error {
     color: #cc6666;
 }
