@@ -7,6 +7,8 @@ A MinRuby interpreter written by BuckleScript.
 
 [MinRuby](https://github.com/mame/minruby): A small, minimal Ruby interpreter
 
+[DEMO](https://cedretaber.github.io/buckleruby)
+
 ## Setup
 
 ```bash
