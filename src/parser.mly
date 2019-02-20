@@ -16,7 +16,7 @@ exception Invalid_stmts of Rexp.t
 %token LBRACE RBRACE
 %token <string> IDENTIFIER
 %token NIL FALSE TRUE
-%token IF THEN ELSE ELSIF END WHILE DEF BEGIN
+%token IF THEN ELSE ELSIF END WHILE DEF BEGIN CASE WHEN
 %token FATARROW
 %token SEMICOLON COMMA EOL
 %token EOF
@@ -93,6 +93,8 @@ expr:
 
     | WHILE expr compstmt END { While ($2, $3) }
 
+    | CASE expr blank_lines when_expr { $4 $2 }
+
     | LBRACKET args RBRACKET { AryNew $2 }
 
     | expr LBRACKET expr RBRACKET            { AryRef ($1, $3) }
@@ -134,4 +136,10 @@ elsif_end:
 then_expr:
       THEN compstmt        { $2 }
     | blank_lines compstmt { $2 }
+;
+
+when_expr:
+      WHEN expr then_expr ELSE compstmt END { fun intr -> If (FuncCall ("==", [$2; intr]), $3, $5) }
+    | WHEN expr then_expr END               { fun intr -> If (FuncCall ("==", [$2; intr]), $3, Lit (Nil)) }
+    | WHEN expr then_expr when_expr         { fun intr -> If (FuncCall ("==", [$2; intr]), $3, $4 intr) }
 ;

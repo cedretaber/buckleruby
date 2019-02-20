@@ -323,3 +323,46 @@ p("$(output_str2)")
       expect (output#flush ()) = expected);
   );
 );
+
+describe "Control" (fun () ->
+  let open Expect in
+  let open! Operators in
+  let open Value in
+  
+  describe "when" (fun () ->
+
+    test "when then" (fun () ->
+      let interp, _, _ = setup () in
+      let str =
+{j|
+case 42
+when 41 then
+  "low"
+when 42 then
+  "just!"
+when 43 then
+  "high"
+else
+  "other"
+end
+|j} in
+      expect (interp @@ parse str) = String "just!"
+    );
+  
+    test "when nl" (fun () ->
+      let interp, _, _ = setup () in
+      let str =
+{j|
+case "hoge"
+when "foo"
+  1
+when "bar"
+  2
+when "baz"
+  3
+end
+|j} in
+      expect (interp @@ parse str) = Nil
+    );
+  );
+);

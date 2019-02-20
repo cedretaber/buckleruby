@@ -58,6 +58,8 @@ rule token = parse
     | "while" { WHILE }
     | "def"   { DEF }
     | "begin" { BEGIN }
+    | "case"  { CASE }
+    | "when"  { WHEN }
 
     | ',' { COMMA }
 
