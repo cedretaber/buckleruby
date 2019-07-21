@@ -7,14 +7,14 @@ module Hash = Belt.MutableMap
 module Array = struct
   include Array
 
-  let expand = [%raw fun size init arr -> {|
+  let expand: int -> 'a -> 'a array -> 'a array = fun%raw size init arr -> {|
     let i = arr.length;
     arr.length = size;
     for (; i < size; ++i) {
       arr[i] = init;
     }
     return arr;
-  |}]
+  |}
 end
 
 exception Invalid_VarRef of string
@@ -79,11 +79,10 @@ let rec eval genv lenv input output = function
         raise (Invalid_argument_number (params_count, args_count, name))
       else
         let lenv' = Env.make () in
-        begin
-          Belt.List.zip args params
-          |. Belt.List.forEach (fun (arg, param) -> Env.set lenv' arg @@ eval genv lenv input output param);
-          eval genv lenv' input output proc
-        end
+        Belt.List.zip args params
+        |. Belt.List.forEach (fun (arg, param) ->
+          Env.set lenv' arg @@ eval genv lenv input output param);
+        eval genv lenv' input output proc
     | Some (`BFunc proc) ->
       proc input output @@ List.map (eval genv lenv input output) params
     | _ -> raise (Invalid_func_call name)
@@ -119,7 +118,7 @@ let rec eval genv lenv input output = function
           arr.(i) <- v;
           v
         end else begin
-          [@warning "-20"] Array.expand (i + 1) Nil arr |> ignore;
+          Array.expand (i + 1) Nil arr |> ignore;
           arr.(i) <- v;
           v
         end
@@ -128,10 +127,8 @@ let rec eval genv lenv input output = function
     | Hash hash ->
       let key = eval genv lenv input output idx
       and v = eval genv lenv input output e in
-      begin
-        Hash.set hash key v;
-        v
-      end
+      Hash.set hash key v;
+      v
     | v -> raise (Invalid_slice_operation v)
     end
   | HashNew es ->
